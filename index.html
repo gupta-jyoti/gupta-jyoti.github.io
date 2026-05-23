@@ -790,13 +790,36 @@ function submitForm() {
   const status = document.getElementById('formStatus');
   const submitBtn = document.getElementById('submitBtn');
   if (!name || !email || !msg) { alert('Please fill in all fields.'); return; }
-  const subject = encodeURIComponent('Portfolio Contact from ' + name);
-  const body = encodeURIComponent('Name: ' + name + '\nEmail: ' + email + '\n\nMessage:\n' + msg);
-  window.location.href = 'mailto:guptajyoti10898@gmail.com?subject=' + subject + '&body=' + body;
-  status.style.display = 'block';
-  status.style.color = 'var(--green)';
-  status.textContent = '✓ Opening your email client...';
-  setTimeout(() => { status.style.display = 'none'; }, 4000);
+  submitBtn.textContent = 'Sending...';
+  submitBtn.disabled = true;
+  fetch('https://formspree.io/f/xpqnlznp', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: JSON.stringify({ name: name, email: email, message: msg })
+  })
+  .then(function(res) { return res.json(); })
+  .then(function(data) {
+    status.style.display = 'block';
+    if (data.ok) {
+      status.style.color = 'var(--green)';
+      status.textContent = '✓ Message sent! I will reply soon.';
+      document.getElementById('fname').value = '';
+      document.getElementById('femail').value = '';
+      document.getElementById('fmsg').value = '';
+    } else {
+      status.style.color = 'var(--red)';
+      status.textContent = '✗ Something went wrong. Email me directly.';
+    }
+    submitBtn.textContent = 'Send Message';
+    submitBtn.disabled = false;
+  })
+  .catch(function() {
+    status.style.display = 'block';
+    status.style.color = 'var(--red)';
+    status.textContent = '✗ Network error. Email me at guptajyoti10898@gmail.com';
+    submitBtn.textContent = 'Send Message';
+    submitBtn.disabled = false;
+  });
 }
 </script>
 </body>
