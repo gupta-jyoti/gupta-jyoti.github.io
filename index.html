@@ -779,7 +779,7 @@ function animateCount(el, target) {
     el.textContent = Math.floor(current);
   }, duration / steps);
 }
-window.addEventListener('load', () => {
+document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('[data-count]').forEach(el => animateCount(el, parseInt(el.dataset.count)));
 });
 
